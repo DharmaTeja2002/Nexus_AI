@@ -23,7 +23,7 @@ with st.sidebar:
     # Model Selection Dropdown
     selected_model = st.selectbox(
         "Select AI Model:",
-        options=["Groq (Llama-3)", "Google (Gemini 1.5)", "Together AI (Llama-3.1)"],
+        options=["Groq (Llama-3)", "Google (Gemini 1.5)"],
         index=0,
         help="Choose which AI engine will answer your questions."
     )
@@ -31,8 +31,7 @@ with st.sidebar:
     # Map the dropdown selection to our backend provider ID
     provider_map = {
         "Groq (Llama-3)": "groq",
-        "Google (Gemini 1.5)": "gemini",
-        "Together AI (Llama-3.1)": "together"
+        "Google (Gemini 1.5)": "gemini"
     }
     selected_provider = provider_map[selected_model]
     

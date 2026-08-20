@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str | None = None
     GROQ_API_KEY: str | None = None
     GEMINI_API_KEY: str | None = None
-    TOGETHER_API_KEY: str | None = None
     LOCAL_LLM_URL: str = "http://172.30.64.1:11434/v1" # Windows Host IP for WSL
     LOCAL_LLM_MODEL: str = "qwen2.5:3b" # The specific local model to use
     

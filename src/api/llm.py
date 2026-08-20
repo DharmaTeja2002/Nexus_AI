@@ -16,12 +16,6 @@ class LLMClient:
                 api_key=settings.GEMINI_API_KEY or "missing_key"
             )
             model_name = "gemini-1.5-flash"
-        elif provider == "together":
-            client = openai.AsyncOpenAI(
-                base_url="https://api.together.xyz/v1",
-                api_key=settings.TOGETHER_API_KEY or "missing_key"
-            )
-            model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
         else: # Default to Groq
             client = openai.AsyncOpenAI(
                 base_url="https://api.groq.com/openai/v1",
