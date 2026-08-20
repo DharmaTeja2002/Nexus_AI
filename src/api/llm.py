@@ -54,4 +54,4 @@ class LLMClient:
             )
             return response.choices[0].message.content
         except Exception as e:
-            return f"Error connecting to LLM ({settings.LLM_PROVIDER}): {str(e)}"
+            return f"Error connecting to LLM ({provider}): {str(e)}"
