@@ -42,11 +42,14 @@ def home():
 
 class AskRequest(BaseModel):
     question: str
+    provider: str = "groq"
 
 # This tells the Waiter: "If someone asks a question, go to the database!"
 @app.post("/ask")
 async def ask_ai(request: AskRequest):
     question = request.question
+    provider = request.provider
+    
     # 1. Take the question and translate it into "Vector Math"
     query_vector = await asyncio.to_thread(manager.embedder.embed_text, question)
     
@@ -57,7 +60,7 @@ async def ask_ai(request: AskRequest):
     if not results:
         return {"answer": "I don't have any documents to answer that question."}
     
-    answer = await llm_client.generate_rag_response(question, results)
+    answer = await llm_client.generate_rag_response(question, results, provider)
     
     # 4. Bring the final answer back to the customer
     return {

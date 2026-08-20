@@ -8,11 +8,36 @@ API_URL = os.getenv("API_URL", "http://localhost:8000")
 # Setup the page layout and title
 st.set_page_config(page_title="Nexus AI", page_icon="🧠", layout="wide")
 
-st.title("🧠 Nexus AI: Developer Copilot")
-st.markdown("Your autonomous AI assistant for navigating the engineering ecosystem.")
+st.title("🧠 Nexus AI: Universal Knowledge Assistant")
+st.markdown("""
+**Welcome to your personal multimodal AI researcher.** 
+Nexus AI allows you to ingest up to 14 different formats of unstructured data (PDFs, Videos, Audio, Code) into a PostgreSQL Vector Memory Bank, and instantly query that knowledge using blazing-fast LLMs.
 
-# --- SIDEBAR: File Uploads ---
+👈 **Upload your files in the sidebar to get started!**
+""")
+
+# --- SIDEBAR: File Uploads & Settings ---
 with st.sidebar:
+    st.header("⚙️ AI Settings")
+    
+    # Model Selection Dropdown
+    selected_model = st.selectbox(
+        "Select AI Model:",
+        options=["Groq (Llama-3)", "Google (Gemini 1.5)", "Together AI (Llama-3.1)"],
+        index=0,
+        help="Choose which AI engine will answer your questions."
+    )
+    
+    # Map the dropdown selection to our backend provider ID
+    provider_map = {
+        "Groq (Llama-3)": "groq",
+        "Google (Gemini 1.5)": "gemini",
+        "Together AI (Llama-3.1)": "together"
+    }
+    selected_provider = provider_map[selected_model]
+    
+    st.divider()
+    
     st.header("📂 Ingest Knowledge")
     st.markdown("Upload architecture PDFs, meeting audio, or code files to the Vector Memory Bank.")
     
@@ -46,7 +71,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Handle new user input
-if prompt := st.chat_input("Ask a technical question about the codebase..."):
+if prompt := st.chat_input(f"Ask a technical question (using {selected_model})..."):
     # 1. Display the user's question
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -56,10 +81,13 @@ if prompt := st.chat_input("Ask a technical question about the codebase..."):
 
     # 3. Ask the FastAPI backend
     with st.chat_message("assistant"):
-        with st.spinner("Searching the vector database..."):
+        with st.spinner(f"Asking {selected_model}..."):
             try:
-                # Send the question to our FastAPI /ask endpoint
-                payload = {"question": prompt}
+                # Send the question AND the selected provider to our FastAPI /ask endpoint
+                payload = {
+                    "question": prompt,
+                    "provider": selected_provider
+                }
                 response = requests.post(f"{API_URL}/ask", json=payload)
                 
                 if response.status_code == 200:
